@@ -1,28 +1,34 @@
+# sgx-device-plugin
+Kubernetes Device Plugin for Intel SGX
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/sgx-device-plugin)](https://goreportcard.com/report/github.com/AliyunContainerService/sgx-device-plugin)
+
+
 English | [简体中文](./README-zh_CN.md)
 
-# Overview
+## Overview
 `sgx-device-plugin` is a Kubernetes Device Plugin powered by Alibaba Cloud and Ant Financial, making it easier to run SGX applications inside a container.
 
 Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for application developers seeking to protect select code and data from disclosure or modification. See [official introduction](https://software.intel.com/en-us/sgx) for more details.
 
-# Features:
+## Features:
 * Using SGX features without privileged mode.
 * Support retrieving real EPC size.
 * Support EPC resource allocation.
 
-# Prerequisites
+## Prerequisites
 * [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
 * [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
 * Kubernetes version >= 1.10
 * Go version >= 1.10
 
-# ACK-TEE Introduction
+## ACK-TEE Introduction
 
-TEE(Trusted Execution Environment), created by hardware isolation and memory encryption technology such as Intel SGX, is a special execution context named enclave which confidential code and data runs inside. It aims to help application owner to protect their data and prevent data steals by other applications, kernel, BIOS, even all hardwares beside CPU.
+TEE (Trusted Execution Environment), created by hardware isolation and memory encryption technology such as Intel SGX, is a special execution context named enclave which confidential code and data runs inside. It aims to help application owner to protect their data and prevent data steals by other applications, kernel, BIOS, even all hardwares beside CPU.
 
 You could create a confidential kubernetes cluster using [ACK (Alibaba Cloud Container Service for Kubernetes)](https://www.aliyun.com/product/kubernetes), all worker nodes are running on bare-metal sgx-enabled machines(model: `ecs.ebmhfg5.2xlarge`) which have less overhead, better performance and more stable than VM. By default, containerd, Intel SGX Driver, Intel SGX PSW(Platform Software) and SGX-Device-Plugin will be installed on each node.
 
-# Build
+## Build
 Step1: Download source code and build binary.
 ```bash
 $ mkdir -p $GOPATH/src/github.com/AliyunContainerService
@@ -38,7 +44,7 @@ $ docker build -t {SGX_DEVICE_PLUGIN_IMAGE} . -f Dockerfile
 $ docker push {SGX_DEVICE_PLUGIN_IMAGE}
 ```
 
-# Deployment
+## Deployment
 While you are creating a confidential kubernetes cluster using ACK(Alibaba Cloud Container Service for Kubernetes), sgx-device-plugin will be installed by default. Also, you may install it on your own private kubernetes cluster manually.
 
 ```bash
@@ -107,7 +113,7 @@ $ kubectl get node {NODE_NAME} -o yaml
 $ 
 ```
 
-# Run SGX-Enabled Application 
+## Run SGX-Enabled Application 
 
 Your application MUST BE SGX-enabled, means that your application is built and signed with SGX SDK, such as Intel SGX SDK.
 
@@ -158,7 +164,7 @@ spec:
 
 ```
 
-# FAQ
+## FAQ
 * **Can I deploy this sgx device plugin in my own self-hosting kubernetes?**  
 Yes, this plugin is cloud native, you can run it on sgx-enabled nodes in any kubernetes.
 
@@ -166,9 +172,9 @@ Yes, this plugin is cloud native, you can run it on sgx-enabled nodes in any kub
 No, EPC size limitation specified by `alibabacloud.com/sgx_epc_MiB` is just used for kube-scheduler.  
 Currently, SGX driver doesn't support EPC size limitation.
 
-# License
+## License
 This software is released under the [Apache 2.0](./LICENSE) license.
 
-# Contributing
+## Contributing
 See [CONTRIBUTING.md](./docs/en/CONTRIBUTING.md) for details.
 

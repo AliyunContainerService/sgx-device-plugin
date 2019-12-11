@@ -27,7 +27,7 @@ func AllDevices() map[string]bool {
 func init() {
 	initOnce.Do(func() {
 		// Detecting devices.
-		for dev, _ := range allDevices {
+		for dev := range allDevices {
 			if fi, err := os.Stat(dev); err == nil && !fi.IsDir() {
 				allDevices[dev] = true
 			}
