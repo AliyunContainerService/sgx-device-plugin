@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sgx-device-plugin-ds
+  namespace: kube-system
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      k8s-app: sgx-device-plugin
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        k8s-app: sgx-device-plugin
+    spec:
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: alibabacloud.com/sgx
+          operator: Exists
+          effect: NoSchedule
+      priorityClassName: "system-node-critical"
+      containers:
+        - image: registry.cn-hangzhou.aliyuncs.com/ocean-image/k8s-device-plugin-sgx:1.0.0-beta
+          imagePullPolicy: Always
+          name: sgx-device-plugin
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: device-plugin
+              mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
