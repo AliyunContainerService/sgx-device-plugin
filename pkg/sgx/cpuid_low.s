@@ -1,7 +1,7 @@
 #include "textflag.h"
 
-// func cpuid_low(leaf, subLeaf uint32) (eax, ebx, ecx, edx uint32)
-TEXT ·cpuid_low(SB),NOSPLIT,$0-24
+// func cpuidLow(leaf, subLeaf uint32) (eax, ebx, ecx, edx uint32)
+TEXT ·cpuidLow(SB),NOSPLIT,$0-24
     MOVL    arg1+0(FP), AX
     MOVL    arg2+4(FP), CX
     CPUID

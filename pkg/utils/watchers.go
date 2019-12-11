@@ -1,4 +1,4 @@
-package sgx
+package utils
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
+// NewFSWatcher makes a FS event watcher.
 func NewFSWatcher(files ...string) (*fsnotify.Watcher, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -24,6 +25,7 @@ func NewFSWatcher(files ...string) (*fsnotify.Watcher, error) {
 	return watcher, nil
 }
 
+// NewOSWatcher make a signal channel.
 func NewOSWatcher(sigs ...os.Signal) chan os.Signal {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, sigs...)

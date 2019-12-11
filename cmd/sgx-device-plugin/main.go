@@ -7,8 +7,9 @@ import (
 	"k8s.io/klog"
 	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
 
-	"github.com/AliyunContainerService/sgx-device-plugin/cmd/app"
+	deviceplugin "github.com/AliyunContainerService/sgx-device-plugin/pkg/device_plugin"
 	"github.com/AliyunContainerService/sgx-device-plugin/pkg/sgx"
+	"github.com/AliyunContainerService/sgx-device-plugin/pkg/utils"
 )
 
 func main() {
@@ -18,25 +19,31 @@ func main() {
 	}
 
 	klog.Infof("Start watching kubelet.socket ...")
-	watcher, err := sgx.NewFSWatcher(devicepluginapi.DevicePluginPath)
+	watcher, err := utils.NewFSWatcher(devicepluginapi.DevicePluginPath)
 	if err != nil {
 		panic(err)
 	}
 	defer watcher.Close()
 
-	sigs := sgx.NewOSWatcher(syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	sigs := utils.NewOSWatcher(syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
 	restart := true
-	var devicePlugin *app.SgxDevicePlugin
+	var devicePlugin *deviceplugin.SGXDevicePlugin
 
 L:
 	for {
 		if restart {
 			if devicePlugin != nil {
-				devicePlugin.Stop()
+				if err := devicePlugin.Stop(); err != nil {
+					panic(err)
+				}
 			}
 
-			devicePlugin = app.NewSgxDevicePlugin()
+			devicePlugin, err = deviceplugin.NewSGXDevicePlugin()
+			if err != nil {
+				panic(err)
+			}
+
 			if err := devicePlugin.Serve(); err != nil {
 				klog.Infof("Could not contact Kubelet, retrying. Did you enable the device plugin feature gate?")
 			} else {
@@ -61,7 +68,9 @@ L:
 				restart = true
 			default:
 				klog.Infof("Received signal \"%v\", shutting down.", s)
-				devicePlugin.Stop()
+				if err := devicePlugin.Stop(); err != nil {
+					panic(err)
+				}
 				break L
 			}
 		}

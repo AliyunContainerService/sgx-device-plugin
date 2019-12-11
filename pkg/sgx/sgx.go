@@ -4,6 +4,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 
 	"golang.org/x/net/context"
 	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
@@ -11,14 +12,15 @@ import (
 
 var initOnce = &sync.Once{}
 
-var allDevices = map[string]bool{
+var allDeviceDrivers = map[string]bool{
 	"/dev/isgx": false, // required
 	"/dev/gsgx": false, // optional
 }
 
-func AllDevices() map[string]bool {
+// AllDeviceDrivers lists all device drivers.
+func AllDeviceDrivers() map[string]bool {
 	ret := make(map[string]bool)
-	for k, v := range allDevices {
+	for k, v := range allDeviceDrivers {
 		ret[k] = v
 	}
 	return ret
@@ -26,18 +28,12 @@ func AllDevices() map[string]bool {
 
 func init() {
 	initOnce.Do(func() {
-		// Detecting devices.
-		for dev, _ := range allDevices {
-			if fi, err := os.Stat(dev); err == nil && !fi.IsDir() {
-				allDevices[dev] = true
+		// Detecting device drivers.
+		for driver := range allDeviceDrivers {
+			if fi, err := os.Stat(driver); err == nil && !fi.IsDir() {
+				allDeviceDrivers[driver] = true
 			}
 		}
-
-		// isgx is required.
-		if !allDevices["/dev/isgx"] {
-			panic("/dev/isgx not found")
-		}
-
 	})
 }
 
@@ -47,18 +43,20 @@ const (
 	cpuidSgxResources   = 0x12
 )
 
-type SgxEpcSection struct {
+// EPCSection - ECP Section(Bank).
+type EPCSection struct {
 	PhysicalAddress uint64
 	Size            uint64
 }
 
-func cpuid_low(leaf, subLeaf uint32) (eax, ebx, ecx, edx uint32)
+func cpuidLow(leaf, subLeaf uint32) (eax, ebx, ecx, edx uint32)
 
-func GetEPCSections() []SgxEpcSection {
-	sections := []SgxEpcSection{}
+// GetEPCSections lists all EPC sections.
+func GetEPCSections() []EPCSection {
+	sections := []EPCSection{}
 
 	for i := 0; i < sgxMaxEpcSections; i++ {
-		eax, ebx, ecx, edx := cpuid_low(cpuidSgxResources, uint32(sgxCpuidEpcSections+i))
+		eax, ebx, ecx, edx := cpuidLow(cpuidSgxResources, uint32(sgxCpuidEpcSections+i))
 
 		if (eax & 0xf) == 0x0 {
 			break
@@ -67,12 +65,13 @@ func GetEPCSections() []SgxEpcSection {
 		pa := ((uint64)(ebx&0xfffff) << 32) + (uint64)(eax&0xfffff000)
 		sz := ((uint64)(edx&0xfffff) << 32) + (uint64)(ecx&0xfffff000)
 
-		sections = append(sections, SgxEpcSection{pa, sz})
+		sections = append(sections, EPCSection{pa, sz})
 	}
 
 	return sections
 }
 
+// GetEPCSize returns total EPC size.
 func GetEPCSize() uint64 {
 	sections := GetEPCSections()
 
@@ -85,6 +84,7 @@ func GetEPCSize() uint64 {
 	return epcSize
 }
 
+// GetDevices divides EPC into many virtual devices, each device's ecp memory is 1MiB.
 func GetDevices() []*devicepluginapi.Device {
 	sizeMB := GetEPCSize() / 1024 / 1024
 	devs := make([]*devicepluginapi.Device, 0, sizeMB)
@@ -99,6 +99,7 @@ func GetDevices() []*devicepluginapi.Device {
 	return devs
 }
 
+// DeviceExists check device existence by id.
 func DeviceExists(devs []*devicepluginapi.Device, id string) bool {
 	for _, d := range devs {
 		if d.ID == id {
@@ -108,12 +109,14 @@ func DeviceExists(devs []*devicepluginapi.Device, id string) bool {
 	return false
 }
 
+// WatchXIDs is used for device health-check.
 func WatchXIDs(ctx context.Context, devs []*devicepluginapi.Device, xids chan<- *devicepluginapi.Device) {
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		default:
+			time.Sleep(time.Second)
 		}
 	}
 }
