@@ -1,6 +1,7 @@
-package app
+package deviceplugin
 
 import (
+	"errors"
 	"net"
 	"os"
 	"path"
@@ -16,23 +17,34 @@ import (
 )
 
 const (
-	vendor          = "alibabacloud.com"
-	ResourceNameSgx = vendor + "/sgx_epc_MiB"
+	vendor = "alibabacloud.com"
+	// ResourceNameSGX is resource name registered to kubelet.
+	ResourceNameSGX = vendor + "/sgx_epc_MiB"
 
 	serverSock             = devicepluginapi.DevicePluginPath + "/sgx.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
 )
 
-// NewSgxDevicePlugin returns an initialized SgxDevicePlugin
-func NewSgxDevicePlugin() *SgxDevicePlugin {
-	return &SgxDevicePlugin{
-		devs:   sgx.GetDevices(),
+// NewSGXDevicePlugin returns an initialized SGXDevicePlugin
+func NewSGXDevicePlugin() (*SGXDevicePlugin, error) {
+	drivers := sgx.AllDeviceDrivers()
+	if _, ok := drivers["/dev/isgx"]; !ok {
+		return nil, errors.New("/dev/isgx not found")
+	}
+
+	devs := sgx.GetDevices()
+	if len(devs) == 0 {
+		return nil, errors.New("empty devices list")
+	}
+
+	return &SGXDevicePlugin{
+		devs:   devs,
 		socket: serverSock,
 
 		stop:   make(chan interface{}),
 		health: make(chan *devicepluginapi.Device),
-	}
+	}, nil
 }
 
 // dial establishes the gRPC communication with the registered device plugin.
@@ -58,7 +70,7 @@ func dial(unixSocketPath string, timeout time.Duration) (*grpc.ClientConn, error
 }
 
 // Start starts the gRPC server of the device plugin
-func (m *SgxDevicePlugin) Start() error {
+func (m *SGXDevicePlugin) Start() error {
 	err := m.cleanup()
 	if err != nil {
 		return err
@@ -94,12 +106,12 @@ func (m *SgxDevicePlugin) Start() error {
 				// to reflect on the frequency
 				restartCount = 1
 			} else {
-				restartCount += 1
+				restartCount++
 			}
 		}
 	}()
 
-	// Wait for server to start by launching a blocking connexion
+	// Wait for server to start by launching a blocking connection
 	conn, err := dial(m.socket, 5*time.Second)
 	if err != nil {
 		return err
@@ -112,7 +124,7 @@ func (m *SgxDevicePlugin) Start() error {
 }
 
 // Stop stops the gRPC server
-func (m *SgxDevicePlugin) Stop() error {
+func (m *SGXDevicePlugin) Stop() error {
 	if m.server == nil {
 		return nil
 	}
@@ -125,7 +137,7 @@ func (m *SgxDevicePlugin) Stop() error {
 }
 
 // Register registers the device plugin for the given resourceName with Kubelet.
-func (m *SgxDevicePlugin) Register(kubeletEndpoint, resourceName string) error {
+func (m *SGXDevicePlugin) Register(kubeletEndpoint, resourceName string) error {
 	conn, err := dial(kubeletEndpoint, 5*time.Second)
 	if err != nil {
 		return err
@@ -136,7 +148,7 @@ func (m *SgxDevicePlugin) Register(kubeletEndpoint, resourceName string) error {
 	reqt := &devicepluginapi.RegisterRequest{
 		Version:      devicepluginapi.Version,
 		Endpoint:     path.Base(m.socket),
-		ResourceName: ResourceNameSgx,
+		ResourceName: ResourceNameSGX,
 	}
 
 	_, err = client.Register(context.Background(), reqt)
@@ -146,18 +158,18 @@ func (m *SgxDevicePlugin) Register(kubeletEndpoint, resourceName string) error {
 	return nil
 }
 
-func (m *SgxDevicePlugin) unhealthy(dev *devicepluginapi.Device) {
+func (m *SGXDevicePlugin) unhealthy(dev *devicepluginapi.Device) {
 	m.health <- dev
 }
 
-func (m *SgxDevicePlugin) cleanup() error {
+func (m *SGXDevicePlugin) cleanup() error {
 	if err := os.Remove(m.socket); err != nil && !os.IsNotExist(err) {
 		return err
 	}
 	return nil
 }
 
-func (m *SgxDevicePlugin) healthcheck() {
+func (m *SGXDevicePlugin) healthcheck() {
 	disableHealthChecks := strings.ToLower(os.Getenv(envDisableHealthChecks))
 	if disableHealthChecks == "all" {
 		disableHealthChecks = allHealthChecks
@@ -183,18 +195,18 @@ func (m *SgxDevicePlugin) healthcheck() {
 }
 
 // Serve starts the gRPC server and register the device plugin to Kubelet
-func (m *SgxDevicePlugin) Serve() error {
+func (m *SGXDevicePlugin) Serve() error {
 	err := m.Start()
 	if err != nil {
 		klog.Errorf("Could not start device plugin: %s", err)
 		return err
 	}
-	klog.Infof("Starting to serve on", m.socket)
+	klog.Infof("Starting to serve on %s", m.socket)
 
-	err = m.Register(devicepluginapi.KubeletSocket, ResourceNameSgx)
+	err = m.Register(devicepluginapi.KubeletSocket, ResourceNameSGX)
 	if err != nil {
 		klog.Errorf("Could not register device plugin: %s", err)
-		m.Stop()
+		_ = m.Stop()
 		return err
 	}
 	klog.Infof("Registered device plugin with Kubelet")
