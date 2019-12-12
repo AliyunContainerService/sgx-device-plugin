@@ -3,6 +3,7 @@
 支持 Intel SGX 的 Kubernetes 设备插件
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/sgx-device-plugin)](https://goreportcard.com/report/github.com/AliyunContainerService/sgx-device-plugin)
+[![CircleCI](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin)
 
 [English](./README.md) | 简体中文
 
