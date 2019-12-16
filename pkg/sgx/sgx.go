@@ -75,7 +75,7 @@ func GetEPCSections() []EPCSection {
 func GetEPCSize() uint64 {
 	sections := GetEPCSections()
 
-	var epcSize uint64 = 0
+	var epcSize uint64
 
 	for _, s := range sections {
 		epcSize += s.Size

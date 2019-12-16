@@ -4,37 +4,40 @@ metadata:
   name: sgx-device-plugin-ds
   namespace: kube-system
 spec:
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       k8s-app: sgx-device-plugin
   template:
     metadata:
       annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ""
+        scheduler.alpha.Kubernetes.io/critical-pod: ""
       labels:
         k8s-app: sgx-device-plugin
     spec:
-      tolerations:
-        - key: CriticalAddonsOnly
-          operator: Exists
-        - key: alibabacloud.com/sgx
-          operator: Exists
-          effect: NoSchedule
-      priorityClassName: "system-node-critical"
       containers:
-        - image: registry.cn-hangzhou.aliyuncs.com/ocean-image/k8s-device-plugin-sgx:1.0.0-beta
-          imagePullPolicy: Always
+        - image: registry.cn-hangzhou.aliyuncs.com/acs/sgx-device-plugin:v1.0.0-fb467e2-aliyun
+          imagePullPolicy: IfNotPresent
           name: sgx-device-plugin
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
-              drop: ["ALL"]
+              drop:
+                - ALL
           volumeMounts:
-            - name: device-plugin
-              mountPath: /var/lib/kubelet/device-plugins
+            - mountPath: /var/lib/kubelet/device-plugins
+              name: device-plugin
+            - mountPath: /dev
+              name: dev
+      tolerations:
+        - effect: NoSchedule
+          key: alibabacloud.com/sgx_epc_MiB
+          operator: Exists
       volumes:
-        - name: device-plugin
-          hostPath:
+        - hostPath:
             path: /var/lib/kubelet/device-plugins
+            type: DirectoryOrCreate
+          name: device-plugin
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: dev
