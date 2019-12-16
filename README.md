@@ -74,7 +74,7 @@ spec:
         k8s-app: sgx-device-plugin
     spec:
       containers:
-      - image: registry.cn-hangzhou.aliyuncs.com/acs/sgx-device-plugin:v1.0.0-6e13136-aliyun
+      - image: registry.cn-hangzhou.aliyuncs.com/acs/sgx-device-plugin:v1.0.0-fb467e2-aliyun
         imagePullPolicy: IfNotPresent
         name: sgx-device-plugin
         securityContext:
