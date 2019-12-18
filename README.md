@@ -69,7 +69,7 @@ spec:
   template:
     metadata:
       annotations:
-        scheduler.alpha.Kubernetes.io/critical-pod: ""
+        scheduler.alpha.kubernetes.io/critical-pod: ""
       labels:
         k8s-app: sgx-device-plugin
     spec:
