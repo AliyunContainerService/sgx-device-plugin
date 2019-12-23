@@ -143,7 +143,9 @@ spec:
         alibabacloud.com/sgx_epc_MiB: 20
 ```
 
-If you want a remote attestation, you should mount `/var/run/aesmd/aesm.socket` in your container, maybe like this:
+If you want a remote attestation, aesm.socket MUST BE mounted inside application containers. There are two ways to achieve it:
+
+Way 1: Mount aesm.socket (i.e. /var/run/aesmd/aesm.socket) inside your application containers manually, maybe like this:
 
 ```yaml
 apiVersion: v1
@@ -171,6 +173,8 @@ spec:
     name: aesmsocket
 
 ```
+
+Way 2: Enable AESM socket attachment of sgx-device-plugin (via --enable-aesm-socket-attach=true) which will help you mount ASEM socket inside your application containers automatically. See deploy/sgx-device-plugin-enable-aesm.yml.
 
 ## FAQ
 

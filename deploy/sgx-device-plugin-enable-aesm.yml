@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: sgx-device-plugin-ds
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: sgx-device-plugin
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        k8s-app: sgx-device-plugin
+    spec:
+      containers:
+        - image: registry.cn-hangzhou.aliyuncs.com/acs/sgx-device-plugin:v1.0.0-fb467e2-aliyun
+          imagePullPolicy: IfNotPresent
+          name: sgx-device-plugin
+          args: ["--enable-aesm-socket-attach"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - mountPath: /var/lib/kubelet/device-plugins
+              name: device-plugin
+            - mountPath: /var/run/aesmd
+              name: aesm
+            - mountPath: /dev
+              name: dev
+      tolerations:
+        - effect: NoSchedule
+          key: alibabacloud.com/sgx_epc_MiB
+          operator: Exists
+      volumes:
+        - hostPath:
+            path: /var/lib/kubelet/device-plugins
+            type: DirectoryOrCreate
+          name: device-plugin
+        - hostPath:
+            path: /var/run/aesmd
+            type: Directory
+          name: aesm
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: dev
