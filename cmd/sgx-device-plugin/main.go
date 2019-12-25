@@ -54,7 +54,7 @@ L:
 		select {
 		case event := <-watcher.Events:
 			if event.Name == devicepluginapi.KubeletSocket && event.Op&fsnotify.Create == fsnotify.Create {
-				klog.Infof("inotify: %s created, restarting.", devicepluginapi.KubeletSocket)
+				klog.Infof("Inotify: %s created, restarting ...", devicepluginapi.KubeletSocket)
 				restart = true
 			}
 
@@ -64,7 +64,7 @@ L:
 		case s := <-sigs:
 			switch s {
 			case syscall.SIGHUP:
-				klog.Infof("Received SIGHUP, restarting.")
+				klog.Infof("Received SIGHUP, restarting ...")
 				restart = true
 			default:
 				klog.Infof("Received signal \"%v\", shutting down.", s)
