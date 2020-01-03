@@ -24,6 +24,8 @@ const (
 	serverSock             = devicepluginapi.DevicePluginPath + "/sgx.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
+
+	STABLE_RUNING_SECONDS = 3600
 )
 
 // NewSGXDevicePlugin returns an initialized SGXDevicePlugin
@@ -88,25 +90,31 @@ func (m *SGXDevicePlugin) Start() error {
 		lastCrashTime := time.Now()
 		restartCount := 0
 		for {
-			klog.Infof("Starting GRPC server")
-			err := m.server.Serve(sock)
-			if err != nil {
-				klog.Errorf("GRPC server crashed with error: %v", err)
-			}
-			// restart if it has not been too often
-			// i.e. if server has crashed more than 5 times and it didn't last more than one hour each time
-			if restartCount > 5 {
-				// quit
-				klog.Fatalf("GRPC server has repeatedly crashed recently. Quitting")
-			}
-			timeSinceLastCrash := time.Since(lastCrashTime).Seconds()
-			lastCrashTime = time.Now()
-			if timeSinceLastCrash > 3600 {
-				// it has been one hour since the last crash.. reset the count
-				// to reflect on the frequency
-				restartCount = 1
-			} else {
-				restartCount++
+			select {
+			case <-m.stop:
+				klog.Infof("[SGXDevicePlugin] Serve() is exited")
+				return
+			default:
+				klog.Infof("Starting GRPC server")
+				err := m.server.Serve(sock)
+				if err != nil {
+					klog.Errorf("GRPC server crashed with error: %v", err)
+				}
+				// restart if it has not been too often
+				// i.e. if server has crashed more than 5 times and it didn't last more than one hour each time
+				if restartCount > 5 {
+					// quit
+					klog.Fatalf("GRPC server has repeatedly crashed recently. Quitting")
+				}
+				timeSinceLastCrash := time.Since(lastCrashTime).Seconds()
+				lastCrashTime = time.Now()
+				if timeSinceLastCrash > STABLE_RUNING_SECONDS {
+					// it has been one hour since the last crash.. reset the count
+					// to reflect on the frequency
+					restartCount = 1
+				} else {
+					restartCount++
+				}
 			}
 		}
 	}()
