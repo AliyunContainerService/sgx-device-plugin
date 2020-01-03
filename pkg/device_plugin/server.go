@@ -21,7 +21,7 @@ const (
 	// ResourceNameSGX is resource name registered to kubelet.
 	ResourceNameSGX = vendor + "/sgx_epc_MiB"
 
-	serverSock             = devicepluginapi.DevicePluginPath + "/sgx.sock"
+	ServerSock             = devicepluginapi.DevicePluginPath + "sgx.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
 
@@ -42,7 +42,7 @@ func NewSGXDevicePlugin() (*SGXDevicePlugin, error) {
 
 	return &SGXDevicePlugin{
 		devs:   devs,
-		socket: serverSock,
+		socket: ServerSock,
 
 		stop:   make(chan interface{}),
 		health: make(chan *devicepluginapi.Device),

@@ -57,6 +57,10 @@ L:
 				klog.Infof("Inotify: %s created, restarting ...", devicepluginapi.KubeletSocket)
 				restart = true
 			}
+			if event.Name == deviceplugin.ServerSock && event.Op&fsnotify.Remove == fsnotify.Remove {
+				klog.Infof("Inotify: %s removed, restarting ...", deviceplugin.ServerSock)
+				restart = true
+			}
 
 		case err := <-watcher.Errors:
 			klog.Infof("inotify: %s", err)
