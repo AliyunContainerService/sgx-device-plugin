@@ -25,7 +25,7 @@ const (
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
 
-	STABLE_RUNING_SECONDS = 3600
+	STABLE_RUNNING_SECONDS = 3600
 )
 
 // NewSGXDevicePlugin returns an initialized SGXDevicePlugin
@@ -108,7 +108,7 @@ func (m *SGXDevicePlugin) Start() error {
 				}
 				timeSinceLastCrash := time.Since(lastCrashTime).Seconds()
 				lastCrashTime = time.Now()
-				if timeSinceLastCrash > STABLE_RUNING_SECONDS {
+				if timeSinceLastCrash > STABLE_RUNNING_SECONDS {
 					// it has been one hour since the last crash.. reset the count
 					// to reflect on the frequency
 					restartCount = 1
