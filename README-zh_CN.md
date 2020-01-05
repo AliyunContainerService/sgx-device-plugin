@@ -30,7 +30,7 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者�
 
 TEE (Trusted Execution Environment) ，中文名：可信执行环境，是把用户应用程序代码和数据运行在一个通过硬件孤岛和内存加密技术（Hardware Isolation and memory encryption Technology）创建的特殊执行上线文环境 Enclave 中，任何其他应用、OS Kernel、BIOS、甚至 CPU 之外的其他硬件均无法访问，主要用于防止用户的机密数据、隐私数据被恶意修改、窥探和窃取。
 
-在 [阿里云ACK (Alibaba Cloud Container Service for Kubernetes)](https://www.aliyun.com/product/kubernetes) 上可以创建一个基于 Intel&reg; SGX 的机密计算托管 Kubernetes 集群，节点型号是支持 Intel&reg; SGX 的裸金属服务器 `ecs.ebmhfg5.2xlarge`, 相对于 VM，裸金属的 Overhead 开销更小，性能更优，性能抖动更小。每个节点上默认都会自动安装 containerd、SGX Driver、SGX PSW(Platform Software) 以及 SGX-Device-Plugin。
+在 [阿里云ACK (Alibaba Cloud Container Service for Kubernetes)](https://aliyun.com/product/kubernetes) 上可以创建一个基于 Intel&reg; SGX 的机密计算托管 Kubernetes 集群，节点型号是支持 Intel&reg; SGX 的裸金属服务器 `ecs.ebmhfg5.2xlarge`, 相对于 VM，裸金属的 Overhead 开销更小，性能更优，性能抖动更小。每个节点上默认都会自动安装 containerd、SGX Driver、SGX PSW(Platform Software) 以及 SGX-Device-Plugin。
 
 ## 编译&打包镜像（可选）
 
