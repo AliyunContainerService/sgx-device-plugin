@@ -24,8 +24,8 @@ jobs:
     - run:
         name: golangci-lint
         command: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
-          golangci-lint run --disable govet || true
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
+          golangci-lint run --disable govet
   markdown-lint:
     docker: # run the steps with Docker
     - image: circleci/node:12
