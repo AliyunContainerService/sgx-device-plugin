@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"strings"
 	"syscall"
 
 	"github.com/fsnotify/fsnotify"
@@ -20,12 +21,11 @@ func init() {
 func main() {
 	flag.Parse()
 
-	klog.Infof("Detecting SGX devices ...")
 	if len(sgx.GetDevices()) == 0 {
 		panic("No Device Found.")
 	}
 
-	klog.Infof("Start watching kubelet.socket ...")
+	klog.Infof("Start watching device plugin socket directory of kubelet ...")
 	watcher, err := utils.NewFSWatcher(devicepluginapi.DevicePluginPath)
 	if err != nil {
 		panic(err)
@@ -60,10 +60,15 @@ L:
 
 		select {
 		case event := <-watcher.Events:
+			if strings.HasSuffix(event.Name, ".sock") || strings.HasSuffix(event.Name, ".socket") {
+				klog.Infof("Event: name - %s, op - %s", event.Name, event.String())
+			}
+
 			if event.Name == devicepluginapi.KubeletSocket && event.Op&fsnotify.Create == fsnotify.Create {
 				klog.Infof("Inotify: %s created, restarting ...", devicepluginapi.KubeletSocket)
 				restart = true
 			}
+
 			if event.Name == deviceplugin.ServerSock && event.Op&fsnotify.Remove == fsnotify.Remove {
 				klog.Infof("Inotify: %s removed, restarting ...", deviceplugin.ServerSock)
 				restart = true
