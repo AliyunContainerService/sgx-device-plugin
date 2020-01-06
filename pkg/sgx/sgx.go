@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"golang.org/x/net/context"
+	"k8s.io/klog"
 	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
 )
 
@@ -45,15 +46,19 @@ func AllDeviceDrivers() map[string]bool {
 func init() {
 	initOnce.Do(func() {
 		// Detecting mount points.
+		klog.Infof("Detecting mount points ...")
 		for mp := range allMountPoints {
 			if fi, err := os.Stat(mp); err == nil && fi.IsDir() {
 				allMountPoints[mp] = true
+				klog.Infof("\tFound mount point: %s", mp)
 			}
 		}
 		// Detecting device drivers.
+		klog.Infof("Detecting device drivers ...")
 		for driver := range allDeviceDrivers {
 			if fi, err := os.Stat(driver); err == nil && !fi.IsDir() {
 				allDeviceDrivers[driver] = true
+				klog.Infof("\tFound device driver: %s", driver)
 			}
 		}
 	})
