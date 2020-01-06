@@ -92,7 +92,7 @@ func (m *SGXDevicePlugin) Allocate(ctx context.Context, reqs *devicepluginapi.Al
 				"SGX_VISIBLE_DEVICES": strings.Join(req.DevicesIDs, ","),
 			},
 			Devices: devices,
-			Mounts: mounts,
+			Mounts:  mounts,
 		}
 
 		klog.Infof("[Allocate] %s", req.String())
