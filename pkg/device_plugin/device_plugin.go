@@ -53,7 +53,25 @@ func (m *SGXDevicePlugin) ListAndWatch(e *devicepluginapi.Empty, s deviceplugina
 // Allocate which return list of devices.
 // Allocate implements DevicePluginServer interface.
 func (m *SGXDevicePlugin) Allocate(ctx context.Context, reqs *devicepluginapi.AllocateRequest) (*devicepluginapi.AllocateResponse, error) {
+	var mounts []*devicepluginapi.Mount
 	var devices []*devicepluginapi.DeviceSpec
+
+	if sgx.EnableAESMSocketAttach {
+		for path, exist := range sgx.AllMountPoints() {
+			if path != sgx.AESMSocketDir {
+				continue
+			}
+			if exist {
+				mounts = append(mounts, &devicepluginapi.Mount{
+					ContainerPath: path,
+					HostPath:      path,
+					ReadOnly:      true,
+				})
+			} else {
+				klog.Warningf("WARNING: Mount point %s not found", path)
+			}
+		}
+	}
 
 	for dev, exist := range sgx.AllDeviceDrivers() {
 		if exist {
@@ -74,6 +92,7 @@ func (m *SGXDevicePlugin) Allocate(ctx context.Context, reqs *devicepluginapi.Al
 				"SGX_VISIBLE_DEVICES": strings.Join(req.DevicesIDs, ","),
 			},
 			Devices: devices,
+			Mounts: mounts,
 		}
 
 		klog.Infof("[Allocate] %s", req.String())

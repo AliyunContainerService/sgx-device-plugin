@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"syscall"
 
 	"github.com/fsnotify/fsnotify"
@@ -12,7 +13,13 @@ import (
 	"github.com/AliyunContainerService/sgx-device-plugin/pkg/utils"
 )
 
+func init() {
+	flag.BoolVar(&sgx.EnableAESMSocketAttach, "enable-aesm-socket-attach", false, "Enables attachment of AESM service socket")
+}
+
 func main() {
+	flag.Parse()
+
 	klog.Infof("Detecting SGX devices ...")
 	if len(sgx.GetDevices()) == 0 {
 		panic("No Device Found.")

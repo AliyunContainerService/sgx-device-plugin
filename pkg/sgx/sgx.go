@@ -10,7 +10,23 @@ import (
 	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
 )
 
+var EnableAESMSocketAttach bool
+var AESMSocketDir string = "/var/run/aesmd"
+
 var initOnce = &sync.Once{}
+
+var allMountPoints = map[string]bool{
+	AESMSocketDir: false, // optional
+}
+
+// AllMountPoints lists all mount points.
+func AllMountPoints() map[string]bool {
+	ret := make(map[string]bool)
+	for k, v := range allMountPoints {
+		ret[k] = v
+	}
+	return ret
+}
 
 var allDeviceDrivers = map[string]bool{
 	"/dev/isgx": false, // required
@@ -28,6 +44,12 @@ func AllDeviceDrivers() map[string]bool {
 
 func init() {
 	initOnce.Do(func() {
+		// Detecting mount points.
+		for mp := range allMountPoints {
+			if fi, err := os.Stat(mp); err == nil && fi.IsDir() {
+				allMountPoints[mp] = true
+			}
+		}
 		// Detecting device drivers.
 		for driver := range allDeviceDrivers {
 			if fi, err := os.Stat(driver); err == nil && !fi.IsDir() {
