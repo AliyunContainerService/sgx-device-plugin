@@ -14,3 +14,10 @@ CONTRIBUTING.md
 DaemonSet
 LibOS
 K8s
+aesmd
+aesm.socket
+enable-aesm-socket-attach
+sgx-device-plugin-enable-aesm-socket-attach
+e.g.
+yml
+yaml
