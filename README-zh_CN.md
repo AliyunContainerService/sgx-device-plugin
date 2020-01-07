@@ -143,7 +143,9 @@ spec:
         alibabacloud.com/sgx_epc_MiB: 20
 ```
 
-如果你的应用需要 Remote Attestation，那么需要访问 AESM，这时可以把 `/var/run/aesmd/aesm.socket` 挂载到你的容器中:
+如果你的应用需要 Remote Attestation，那么必须将 aesm.socket 挂载到你的容器中，有两种方法:
+
+方法一：手动挂载 `/var/run/aesmd/aesm.socket` 到你的容器中，例如：
 
 ```yaml
 apiVersion: v1
@@ -171,6 +173,9 @@ spec:
     name: aesmsocket
 
 ```
+
+方法二：启用 sgx-device-plugin 的 AESM socket 自动挂载功能（通过 `--enable-aesm-socket-attach=true` 选项），详情可参考 [deploy/sgx-device-plugin-enable-aesm-socket-attach.yaml](deploy/sgx-device-plugin-enable-aesm-socket-attach.yaml)。
+
 
 ## FAQ
 
