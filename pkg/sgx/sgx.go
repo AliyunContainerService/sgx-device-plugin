@@ -30,7 +30,8 @@ func AllMountPoints() map[string]bool {
 }
 
 var allDeviceDrivers = map[string]bool{
-	"/dev/isgx": false, // required
+	"/dev/isgx": false, // required out-of-tree sgx driver
+	"/dev/sgx":  false, // alternative in-tree sgx driver
 	"/dev/gsgx": false, // optional
 }
 
