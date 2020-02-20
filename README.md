@@ -30,7 +30,7 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for app
 
 TEE (Trusted Execution Environment), created by hardware isolation and memory encryption technology such as Intel SGX, is a special execution context named enclave which confidential code and data runs inside. It aims to help application owners to protect their data and prevent data steals by other applications, kernel, BIOS, even all hardware beside CPU.
 
-You could create a confidential Kubernetes cluster using [ACK (Alibaba Cloud Container Service for Kubernetes)](https://aliyun.com/product/kubernetes), all worker nodes are running on bare-metal sgx-enabled machines(model: `ecs.ebmhfg5.2xlarge`) which have less overhead, better performance and more stablity than VM. By default, containerd, Intel SGX Driver, Intel SGX PSW(Platform Software) and SGX-Device-Plugin will be installed on each node.
+You could create a confidential Kubernetes cluster using [ACK (Alibaba Cloud Container Service for Kubernetes)](https://aliyun.com/product/kubernetes), all worker nodes are running on bare-metal sgx-enabled machines(model: `ecs.ebmhfg5.2xlarge`) which have less overhead, better performance and stablity than VM. By default, containerd, Intel SGX Driver, Intel SGX PSW(Platform Software) and SGX-Device-Plugin will be installed on each node.
 
 ## Build
 
