@@ -5,6 +5,7 @@
 # where filename is relative to this configuration file
 sgx-device-plugin
 Kubernetes
+kubernetes
 Alibaba
 ACK-TEE
 sgx-enabled
@@ -21,3 +22,4 @@ sgx-device-plugin-enable-aesm-socket-attach
 e.g.
 yml
 yaml
+hello_world
