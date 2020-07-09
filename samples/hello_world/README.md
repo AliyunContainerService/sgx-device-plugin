@@ -13,7 +13,7 @@ TARGET_IMAGE=sgx_hello_world make image
 ## Run it in docker
 
 ```bash
-docker run -d --name=my_sgx_hello_world --dievice=/dev/isgx -v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket sgx_hello_world
+docker run -d --name=my_sgx_hello_world --device=/dev/isgx -v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket sgx_hello_world
 docker logs -f my_sgx_hello_world
 ```
 
