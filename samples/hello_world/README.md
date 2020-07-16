@@ -51,11 +51,18 @@ spec:
         volumeMounts:
         - mountPath: /var/run/aesmd/aesm.socket
           name: aesmsocket
+        - mountPath: /dev/isgx
+          name: sgxdevice
+        securityContext:
+          privileged: true
       volumes:
       - hostPath:
           path: /var/run/aesmd/aesm.socket
           type: Socket
         name: aesmsocket
+      - hostPath:
+          path: /dev/isgx
+          name: sgxdevice
 EOF
 ```
 
