@@ -7,7 +7,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"k8s.io/klog"
-	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
+	devicepluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 
 	deviceplugin "github.com/AliyunContainerService/sgx-device-plugin/pkg/device_plugin"
 	"github.com/AliyunContainerService/sgx-device-plugin/pkg/sgx"

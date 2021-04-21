@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/net/context"
 	"k8s.io/klog"
-	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
+	devicepluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 )
 
 var EnableAESMSocketAttach bool

@@ -11,7 +11,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"k8s.io/klog"
-	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
+	devicepluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 
 	"github.com/AliyunContainerService/sgx-device-plugin/pkg/sgx"
 )

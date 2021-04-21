@@ -7,10 +7,12 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"k8s.io/klog"
-	devicepluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
+	devicepluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 
 	"github.com/AliyunContainerService/sgx-device-plugin/pkg/sgx"
 )
+
+var _ devicepluginapi.DevicePluginServer = &SGXDevicePlugin{}
 
 // SGXDevicePlugin implements the Kubernetes device plugin API: DevicePluginServer.
 type SGXDevicePlugin struct {
@@ -48,6 +50,11 @@ func (m *SGXDevicePlugin) ListAndWatch(e *devicepluginapi.Empty, s deviceplugina
 			}
 		}
 	}
+}
+
+// GetPreferredAllocation implements DevicePluginServer interface.
+func (m *SGXDevicePlugin) GetPreferredAllocation(ctx context.Context, req *devicepluginapi.PreferredAllocationRequest) (*devicepluginapi.PreferredAllocationResponse, error) {
+	return &devicepluginapi.PreferredAllocationResponse{}, nil
 }
 
 // Allocate which return list of devices.
