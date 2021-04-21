@@ -30,13 +30,9 @@ const (
 
 // NewSGXDevicePlugin returns an initialized SGXDevicePlugin
 func NewSGXDevicePlugin() (*SGXDevicePlugin, error) {
-	drivers := sgx.AllDeviceDrivers()
-	if !drivers["/dev/isgx"] && !drivers["/dev/sgx"] {
-		return nil, errors.New("either /dev/isgx or /dev/sgx not found")
-	}
 
-	if drivers["/dev/isgx"] && drivers["/dev/sgx"] {
-		return nil, errors.New("neither /dev/isgx nor /dev/sgx found")
+	if sgx.GetSGXVersion() == sgx.SGXNone {
+		return nil, errors.New("neither sgx2 nor sgx1 driver found")
 	}
 
 	devs := sgx.GetDevices()

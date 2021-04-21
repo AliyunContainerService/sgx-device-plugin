@@ -81,15 +81,26 @@ func (m *SGXDevicePlugin) Allocate(ctx context.Context, reqs *devicepluginapi.Al
 	}
 
 	for dev, exist := range sgx.AllDeviceDrivers() {
-		if exist {
+		if !exist {
+			klog.Warningf("WARNING: Device %s not found", dev)
+			continue
+		}
+
+		devices = append(devices, &devicepluginapi.DeviceSpec{
+			ContainerPath: dev,
+			HostPath:      dev,
+			Permissions:   "rw",
+		})
+
+		if dev == "/dev/sgx_enclave" || dev == "/dev/sgx_provision" {
+			cPath := strings.ReplaceAll(dev, "_", "/")
 			devices = append(devices, &devicepluginapi.DeviceSpec{
-				ContainerPath: dev,
+				ContainerPath: cPath,
 				HostPath:      dev,
 				Permissions:   "rw",
 			})
-		} else {
-			klog.Warningf("WARNING: Device %s not found", dev)
 		}
+
 	}
 
 	responses := devicepluginapi.AllocateResponse{}

@@ -1,6 +1,6 @@
 # sgx-device-plugin
 
-支持 Intel SGX 的 Kubernetes 设备插件
+支持 Intel SGX2/SGX1 的 Kubernetes 设备插件
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/sgx-device-plugin)](https://goreportcard.com/report/github.com/AliyunContainerService/sgx-device-plugin)
 [![CircleCI](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin)
@@ -9,7 +9,7 @@
 
 ## 介绍
 
-sgx-device-plugin 由阿里云容器服务团队和蚂蚁金服安全计算团队针对 Intel SGX 联合开发的 Kubernetes Device Plugin，可以帮助用户更容易的在容器中使用 SGX。
+sgx-device-plugin 由阿里云容器服务团队和蚂蚁金服安全计算团队针对 Intel SGX 联合开发的 Kubernetes Device Plugin，可以帮助用户更容易的在容器中使用 SGX2/SGX1。
 
 Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者提供的安全技术，用于防止指定的代码和数据的窃取和恶意篡改。详情可参考[官方链接](https://software.intel.com/en-us/sgx) 。
 
@@ -17,14 +17,17 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者�
 
 * 无需开启容器特权模式即可使用 SGX；
 * 支持 EPC 内存大小自动获取；
-* 支持容器声明式 EPC 内存分配。
+* 支持容器声明式 EPC 内存分配；
+* 支持 SGX2 驱动（/dev/sgx_enclave、/dev/sgx_provision、/dev/sgx/enclave、/dev/sgx/provision）自动透传和挂载到容器；
+* 支持 SGX1 驱动（/dev/isgx、/dev/sgx）自动透传和挂载到容器；
 
 ## 依赖
 
-* [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
-* [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (如果你需要 AESM 服务)
+* 对于 SGX1
+ - [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
+ - [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (如果你需要 AESM 服务)
 * Kubernetes 版本 >= 1.10
-* Go 版本 >= 1.10
+* Go 版本 >= 1.13
 
 ## ACK-TEE 简介
 
@@ -57,7 +60,7 @@ docker push {SGX_DEVICE_PLUGIN_IMAGE}
 
 ```bash
 $ cat <<EOF | kubectl create -f -
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: sgx-device-plugin-ds

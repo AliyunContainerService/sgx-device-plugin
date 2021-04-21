@@ -23,3 +23,14 @@ e.g.
 yml
 yaml
 hello_world
+passthrough
+SGX1
+SGX2
+dev
+sgx_enclave
+sgx_provision
+isgx
+sgx
+inclavare
+inclavare-containers
+occlum
