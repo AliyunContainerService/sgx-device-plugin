@@ -1,6 +1,6 @@
 # sgx-device-plugin
 
-Kubernetes Device Plugin for Intel SGX
+Kubernetes Device Plugin for Intel SGX2/SGX1.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/sgx-device-plugin)](https://goreportcard.com/report/github.com/AliyunContainerService/sgx-device-plugin)
 [![CircleCI](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin)
@@ -9,22 +9,25 @@ English | [简体中文](./README-zh_CN.md)
 
 ## Overview
 
-`sgx-device-plugin` is a Kubernetes Device Plugin powered by Alibaba Cloud and Ant Financial, making it easier to run SGX applications inside a container.
+`sgx-device-plugin` is a Kubernetes Device Plugin powered by Alibaba Cloud and Ant Financial, making it easier to run SGX1/SGX2 applications inside a container.
 
 Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for application developers seeking to protect select code and data from disclosure or modification. See [official introduction](https://software.intel.com/en-us/sgx) for more details.
 
 ## Features
 
 * Using SGX features without privileged mode.
-* Support retrieving real EPC size.
+* Support retrieving real SGX1/SGX2 EPC size.
 * Support EPC resource allocation.
+* Support SGX1(/dev/isgx, /dev/sgx) drivers passthrough.
+* Support SGX2(/dev/sgx_enclave, /dev/sgx_provision, /dev/sgx/enclave, /dev/sgx/provision) drivers passthrough.
 
 ## Prerequisites
 
-* [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
-* [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
+* For SGX1
+    - [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
+    - [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
 * Kubernetes version >= 1.10
-* Go version >= 1.10
+* Go version >= 1.13
 
 ## ACK-TEE Introduction
 
@@ -57,7 +60,7 @@ While you are creating a confidential Kubernetes cluster using ACK(Alibaba Cloud
 
 ```bash
 $ cat <<EOF | kubectl create -f -
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: sgx-device-plugin-ds

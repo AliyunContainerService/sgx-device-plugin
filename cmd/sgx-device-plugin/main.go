@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	flag.BoolVar(&sgx.EnableAESMSocketAttach, "enable-aesm-socket-attach", false, "Enables attachment of AESM service socket")
+	flag.BoolVar(&sgx.EnableAESMSocketAttach, "enable-aesm-socket-attach", false, "Enables attachment of AESM service socket for sgx1")
 }
 
 func main() {

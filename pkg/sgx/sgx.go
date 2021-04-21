@@ -30,9 +30,35 @@ func AllMountPoints() map[string]bool {
 }
 
 var allDeviceDrivers = map[string]bool{
+	// SGX1
 	"/dev/isgx": false, // required out-of-tree sgx driver
 	"/dev/sgx":  false, // alternative in-tree sgx driver
+
+	// SGX2
+	"/dev/sgx_enclave":   false,
+	"/dev/sgx_provision": false,
+
 	"/dev/gsgx": false, // optional
+}
+
+type SGXVersion string
+
+const (
+	SGXV1   SGXVersion = "sgx1"
+	SGXV2   SGXVersion = "sgx2"
+	SGXNone SGXVersion = "none"
+)
+
+func GetSGXVersion() SGXVersion {
+	if allDeviceDrivers["/dev/sgx_enclave"] || allDeviceDrivers["/dev/sgx_provision"] {
+		return SGXV2
+	}
+
+	if allDeviceDrivers["/dev/isgx"] || allDeviceDrivers["/dev/sgx"] {
+		return SGXV1
+	}
+
+	return SGXNone
 }
 
 // AllDeviceDrivers lists all device drivers.
