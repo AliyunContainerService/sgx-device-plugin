@@ -11,7 +11,7 @@ English | [简体中文](./README-zh_CN.md)
 
 `sgx-device-plugin` is a Kubernetes Device Plugin powered by Alibaba Cloud and Ant Financial, making it easier to run SGX1/SGX2 applications inside a container.
 
-Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for application developers seeking to protect select code and data from disclosure or modification. See [official introduction](https://software.intel.com/en-us/sgx) for more details.
+Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for application developers seeking to protect select code and data from disclosure or modification. See [official introduction](https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/overview.html) for more details.
 
 ## Features
 

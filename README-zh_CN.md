@@ -11,7 +11,7 @@
 
 sgx-device-plugin 由阿里云容器服务团队和蚂蚁金服安全计算团队针对 Intel SGX 联合开发的 Kubernetes Device Plugin，可以帮助用户更容易的在容器中使用 SGX2/SGX1。
 
-Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者提供的安全技术，用于防止指定的代码和数据的窃取和恶意篡改。详情可参考[官方链接](https://software.intel.com/en-us/sgx) 。
+Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者提供的安全技术，用于防止指定的代码和数据的窃取和恶意篡改。详情可参考[官方链接](https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/overview.html) 。
 
 ## 功能
 
