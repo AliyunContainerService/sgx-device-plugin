@@ -5,7 +5,7 @@ version: 2
 jobs:
   build:
     docker:
-    - image: circleci/golang:1.21
+    - image: cimg/go:1.21.1
     working_directory: /go/src/github.com/AliyunContainerService/sgx-device-plugin
     steps:
     - checkout
@@ -28,7 +28,7 @@ jobs:
           golangci-lint run --disable govet
   markdown-lint:
     docker: # run the steps with Docker
-    - image: circleci/node:18
+    - image: cimg/node:20.6.1
     working_directory: ~/sgx-device-plugin
     steps:
     - checkout
