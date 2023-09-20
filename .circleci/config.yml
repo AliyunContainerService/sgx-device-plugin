@@ -46,9 +46,9 @@ jobs:
           for name in $(find . -name \*.md | grep -v vendor); do 
             if [ -f $name ]; then 
               markdown-link-check -q $name; 
-              if [ $? -ne 0 ]; then
-                #code=1   # Ignore for markdown-link-check cannot support encoding properly
-              fi
+              #if [ $? -ne 0 ]; then
+              #  code=1   # Ignore for markdown-link-check cannot support encoding properly
+              #fi
             fi 
           done 
           bash -c "exit $code";
