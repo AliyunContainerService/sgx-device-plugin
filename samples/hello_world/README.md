@@ -1,10 +1,12 @@
 # hello_world
 
-`hello_world` is a sample application which demonstrates how to develop and run a SGX application inside docker or 
+`hello_world` is a sample application which demonstrates how to develop and run a SGX application inside docker or
 kubernetes(ACK-TEE), printing messages periodically.
 
 ## Build image
+
 This step will build application and then pack it into an image.
+
 ```bash
 cd sgx-device-plugin/samples/hello_world
 TARGET_IMAGE=sgx_hello_world make image
@@ -16,7 +18,6 @@ TARGET_IMAGE=sgx_hello_world make image
 docker run -d --name=my_sgx_hello_world --device=/dev/isgx -v /var/run/aesmd/aesm.socket:/var/run/aesmd/aesm.socket sgx_hello_world
 docker logs -f my_sgx_hello_world
 ```
-
 
 ## Run it in Kubernetes(ACK-TEE)
 

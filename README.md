@@ -3,7 +3,6 @@
 Kubernetes Device Plugin for Intel SGX2/SGX1.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/sgx-device-plugin)](https://goreportcard.com/report/github.com/AliyunContainerService/sgx-device-plugin)
-[![CircleCI](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/sgx-device-plugin)
 
 English | [简体中文](./README-zh_CN.md)
 
@@ -24,8 +23,8 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for app
 ## Prerequisites
 
 * For SGX1
-    - [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
-    - [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
+  * [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
+  * [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
 * Kubernetes version >= 1.10
 * Go version >= 1.13
 
