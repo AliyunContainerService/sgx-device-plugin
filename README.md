@@ -24,8 +24,8 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) is an Intel technology for app
 ## Prerequisites
 
 * For SGX1
-    - [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
-    - [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
+  * [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
+  * [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (If you need AESM)
 * Kubernetes version >= 1.10
 * Go version >= 1.13
 

@@ -31,4 +31,4 @@ jobs:
       with:
         files: .
         config_file: .markdownlint.json
-        ignore_files: vendor/*
+        ignore_files: vendor

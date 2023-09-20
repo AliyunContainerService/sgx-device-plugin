@@ -24,8 +24,8 @@ Intel(R) Software Guard Extensions (Intel(R) SGX) 是 Intel 为软件开发者�
 ## 依赖
 
 * 对于 SGX1
- - [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
- - [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (如果你需要 AESM 服务)
+  * [Intel SGX Drivers](https://github.com/intel/linux-sgx-driver)
+  * [Intel SGX PSW(Platform Software)](https://github.com/intel/linux-sgx) (如果你需要 AESM 服务)
 * Kubernetes 版本 >= 1.10
 * Go 版本 >= 1.13
 
@@ -178,7 +178,6 @@ spec:
 ```
 
 方法二：启用 sgx-device-plugin 的 AESM socket 自动挂载功能（通过 `--enable-aesm-socket-attach=true` 选项），详情可参考 [deploy/sgx-device-plugin-enable-aesm-socket-attach.yaml](deploy/sgx-device-plugin-enable-aesm-socket-attach.yaml)。
-
 
 ## FAQ
 
