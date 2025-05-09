@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/alinux/alinux3
+FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/alinux3:latest
  
 ARG REGION_ID=cn-hangzhou
  
